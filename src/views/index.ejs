@@ -1,14 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
-    <title><%= title %> </title>
+    <title>Lexal Store</title>
 </head>
-<body>
-    <%- include("widgets/navbar") %>
-    <h1>Welcome, <%= user.name %>!</h1>
-    
+
+<body class="dark">
+    <%- include("partials/navbar") %>
+    <h1>Welcome!</h1>
+
+    <section>
+
+        <!--Carousel for products-->
+        <div class="carousel">
+            <h2>Carousel</h2>
+            <p><%= carousel %></p>
+        </div>
+    </section>
+
+    <section>
+        <!--Recommended products-->
+        <div>
+            <div>
+                <h2>Recommended Products</h2>
+                <p>Check out our recommended products!</p>
+            </div>
+            <div>
+                <span>View</span>
+                <span>image arrow</span>
+            </div>
+        </div>
+
+        <div>
+            <!--product listing-->
+            <%= products %>
+        </div>
+    </section>
+
+    <section>
+        <!--Trending products-->
+        <h2>Trending Products</h2>
+        <p>Check out our trending products!</p>
+        <div>
+            <!--trending listing-->
+            <%= trending %>
+        </div>
+    </section>
+
+    <%- include("partials/footer") %>
 </body>
+
 </html>
