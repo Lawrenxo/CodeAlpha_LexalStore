@@ -1,12 +1,11 @@
 import { z } from "zod";
 
-const productSchema = z.object({
-    id: z.int(),
+export const ProductSchema = z.object({
+    id: z.uuid(),
     name: z.string(),
+    imageUrl: z.string(),
     description: z.string().optional(),
     price: z.number(),
     createdAt: z.date().optional()
-
-
 });
 
