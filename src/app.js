@@ -2,6 +2,7 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import "dotenv/config";
+import { env } from "./config.js";
 import apiRouter from "./routes/api.js";
 import viewRouter from "./routes/view.js";
 
@@ -20,7 +21,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api", apiRouter);
 app.use("/", viewRouter);
 
-const port = process.env.PORT || 3000;
+const port = env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 } );
