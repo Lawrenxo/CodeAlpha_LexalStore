@@ -17,7 +17,7 @@ class DropdownMenu extends HTMLElement {
                     padding: 0.5rem;
                     margin: 0.5rem;
                     border-radius: 0.5rem;
-                    background-color: white;
+                    background-color: light-dark(#FFFFFF, #1E1E1E);
                     box-shadow: 0 0 5px #1654FE55;
                 }
                 
@@ -26,8 +26,6 @@ class DropdownMenu extends HTMLElement {
                 }
                 
                 .toggle {
-                    padding: 0.2rem 1rem;
-                    margin: 0.2rem;
                     background-color: transparent;
                     border: none;
                     border-radius: 50%;
@@ -42,7 +40,7 @@ class DropdownMenu extends HTMLElement {
             
             <span part="menu" class="menu">
                 <button part="toogle" class="toggle">
-                    <span part="icon" style="font-size:24px;">&#8942;</span>
+                    <span part="icon" class="icon">&#x205D;</span>
                 </button>
                 <div class="content" part="content">
                     <slot></slot>
