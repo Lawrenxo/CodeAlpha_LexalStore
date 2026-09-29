@@ -1,90 +1,85 @@
 import { z } from "zod";
+import { randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { BaseRepo } from "./base.js";
 import { UserSchema, UserSigninCredSchema, UserSignupCredSchema } from "../models/user.js";
 
-/** 
+/**
  * @typedef {z.infer<typeof UserSchema>} User
  * @typedef {z.infer<typeof UserSigninCredSchema>} UserSigninCred
  * @typedef {z.infer<typeof UserSignupCredSchema>} UserSignupCred
  */
 
-export class UserRepo extends BaseRepo {
+export function hashPassword(password) {
+    const salt = randomUUID().replace(/-/g, "").slice(0, 32);
+    const hash = scryptSync(password, salt, 64).toString("hex");
+    return `${salt}:${hash}`;
+}
 
+export function verifyPassword(password, stored) {
+    try {
+        const [salt, hash] = String(stored).split(":");
+        if (!salt || !hash) return false;
+        const derived = scryptSync(password, salt, 64);
+        const expected = Buffer.from(hash, "hex");
+        if (derived.length !== expected.length) return false;
+        return timingSafeEqual(derived, expected);
+    } catch {
+        return false;
+    }
+}
+
+function mapUser(u) {
+    if (!u) return null;
+    return {
+        id: u.id,
+        username: u.username,
+        email: u.email,
+        passwordHash: u.password_hash,
+        createdAt: u.created_at ? new Date(u.created_at) : undefined
+    };
+}
+
+export class UserRepo extends BaseRepo {
     /**
      * @param {UserSignupCred} cred
      * @returns {Promise<User>}
      */
     async create(cred) {
-        const validCred = UserSignupCredSchema.parse(cred);
-        const { email, username } = validCred;
-        const id = "";
-        const passwordHash = ""; // TODO: Hash the password before storing it
-        const createdAt = new Date();
-
-        await this.transaction((c) => {
-            c.execute(`INSERT INTO users (id, username, email, password_hash, created_at) VALUES (?, ?, ?, ?)`,
-                [id, username, email, passwordHash, createdAt]
-            );
-        });
-
-        return { id, username, email, passwordHash, createdAt };
+        const valid = UserSignupCredSchema.parse(cred);
+        const id = randomUUID();
+        const passwordHash = hashPassword(valid.password);
+        await this.db().query(
+            `INSERT INTO users (id, username, email, password_hash) VALUES (?, ?, ?, ?)`,
+            [id, valid.username, valid.email, passwordHash]
+        );
+        const user = await this.findById(id);
+        return user;
     }
 
-    /**
-     * @param {string} id
-     * @returns {Promise<User | null>}
-     */
+    /** @param {string} id */
     async findById(id) {
-        const result = await this.transaction((c) => {
-            return c.execute(`SELECT * FROM users WHERE id = ?`, [id]);
-        });
-
-        if (result.length === 0) {
-            return null;
-        }
-
-        const user = result[0];
-        return {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            passwordHash: user.password_hash,
-            createdAt: user.created_at
-        };
+        const [rows] = await this.db().query(`SELECT * FROM users WHERE id = ? LIMIT 1`, [id]);
+        return rows.length ? mapUser(rows[0]) : null;
     }
 
-    /**
-     * @param {UserSigninCred} cred
-     * @returns {Promise<User | null>}
-     */
+    /** @param {string} email */
+    async findByEmail(email) {
+        const [rows] = await this.db().query(`SELECT * FROM users WHERE email = ? LIMIT 1`, [email]);
+        return rows.length ? mapUser(rows[0]) : null;
+    }
+
+    /** Verify email+password, return user or null. */
+    async verifySignin(email, password) {
+        const user = await this.findByEmail(email);
+        if (!user) return null;
+        if (!verifyPassword(password, user.passwordHash)) return null;
+        return user;
+    }
+
+    // Back-compat wrappers
+    async signup(cred) { return this.create(cred); }
     async signin(cred) {
-        const validCred = UserSigninCredSchema.parse(cred);
-        const { email } = validCred;
-        const passwordHash = "";
-
-        const result = await this.transaction((c) => {
-            return c.execute(`SELECT * FROM users WHERE email = ? AND password_hash = ?`, [email, passwordHash]);
-        });
-
-        if (result.length === 0) {
-            return null;
-        }
-
-        const user = result[0];
-        return {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            passwordHash: user.password_hash,
-            createdAt: user.created_at
-        };
-    }
-
-    /**
-     * @param {UserSignupCred} cred
-     * @returns {Promise<User>}
-     */
-    async signup(cred) {
-        return await create(cred);
+        const valid = UserSigninCredSchema.parse(cred);
+        return this.verifySignin(valid.email, valid.password);
     }
 }

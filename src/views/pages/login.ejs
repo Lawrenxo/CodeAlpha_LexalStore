@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user:null}) %>
+<div class="auth-wrap"><h2>Welcome back 👋</h2><p style="color:var(--muted)">Login to checkout faster and track orders.</p>
+<div class="alert" id="err" style="display:none"></div>
+<label class="lbl">Email</label><input class="input" id="email" type="email" placeholder="you@example.com"/>
+<label class="lbl">Password</label><input class="input" id="pass" type="password" placeholder="••••••••"/>
+<button class="btn primary block" id="btn" style="margin-top:16px">Login</button>
+<p style="text-align:center">No account? <a class="link" href="/register<%= next?('?next='+encodeURIComponent(next)):'' %>">Create one</a></p>
+</div>
+<%- include("../partials/footer") %>
+<script>
+document.getElementById('btn').onclick=async()=>{
+  const e=document.getElementById('err'); e.style.display='none';
+  try{
+    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value,password:document.getElementById('pass').value})});
+    const d=await res.json(); if(!res.ok) throw new Error(d.error||'Login failed');
+    location.href="<%= next || '/'; %>"||'/';
+  }catch(err){e.textContent=err.message;e.style.display='block'}
+};
+</script>
+</body></html>
+

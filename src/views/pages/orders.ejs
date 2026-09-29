@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Orders — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec"><h2>My Orders</h2>
+<div class="panel">
+<% if(!orders.length){ %><div class="empty">No orders yet.<br/><br/><a class="btn primary" href="/shop">Start shopping</a></div><% } %>
+<table class="orders"><thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>
+<% orders.forEach(o=>{ %><tr><td><b>#<%= o.id.slice(0,8) %></b><br/><small style="color:var(--muted)"><%= o.shippingType %></small></td>
+<td><%= o.createdAt ? new Date(o.createdAt).toLocaleDateString() : '' %></td>
+<td><span class="status"><%= o.status %></span></td><td><b><%= money(o.total) %></b></td>
+<td><a class="link" href="/orders/<%= o.id %>">View →</a></td></tr><% }) %>
+</tbody></table>
+</div></section>
+<%- include("../partials/footer") %></body></html>
+

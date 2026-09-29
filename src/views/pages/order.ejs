@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Order <%= order.id.slice(0,8) %> — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec">
+<div class="panel" style="text-align:center;padding:32px"><div style="font-size:48px">✅</div><h2>Order placed! Thank you 🎉</h2><p style="color:var(--muted)">Order <b>#<%= order.id.slice(0,8) %></b> • <span class="status"><%= order.status %></span></p>
+<div class="steps"><div class="step done"><div class="dot">✓</div>Confirmed</div><div class="step done"><div class="dot">📦</div>Packed</div><div class="step"><div class="dot">🚚</div>Shipped</div><div class="step"><div class="dot">🏠</div>Delivered</div></div>
+<button class="btn" onclick="openRateModal()">⭐ Rate your order</button> <a class="btn primary" href="/shop">Continue Shopping</a>
+</div>
+<div class="split" style="margin-top:14px">
+<div class="panel"><h3>Items</h3><% order.items.forEach(it=>{ %><div class="cart-item"><img src="<%= it.imageUrl %>" onerror="this.src='/img/products/headphones.jpg'"/><div class="grow"><b><%= it.name %></b><br/><small>Qty <%= it.quantity %> × $<%= Number(it.price).toFixed(2) %></small></div><b>$<%= (it.quantity*it.price).toFixed(2) %></b></div><% }) %></div>
+<div class="panel"><h3>Delivery</h3><p><b><%= order.shippingType %></b><br/><small style="color:var(--muted)"><%= order.shippingAddress %></small></p><div class="divider"></div><div class="summary-row total"><span>Total paid</span><span><%= money(order.total) %></span></div><a class="link" href="/orders">← All orders</a></div>
+</div>
+</section>
+<%- include("../partials/footer") %></body></html>
+
+

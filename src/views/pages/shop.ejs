@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Shop — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user,categories}) %>
+<section class="sec">
+<div class="sec-head"><h2>Shop <% if(category&&category!=='All'){ %><%= category %><% } %> <% if(q){ %> — “<%= q %>”<% } %></h2><span style="color:var(--muted)"><%= products.length %> items</span></div>
+<form action="/shop" method="GET" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+<input class="input" name="q" placeholder="Search gadgets..." value="<%= q %>" style="max-width:320px"/>
+<select class="input" name="category" style="max-width:220px">
+<option value="All">All categories</option>
+<% categories.forEach(c=>{ %><option value="<%= c %>" <%= category===c?'selected':'' %>><%= c %></option><% }) %>
+</select>
+<button class="btn dark" type="submit">Filter</button>
+</form>
+<% if(!products.length){ %><div class="empty">No products found. Try another search.<br/><br/><a class="btn primary" href="/shop">Clear filters</a></div><% } %>
+<div class="grid"><% products.forEach(p=>{ %><%- include("../partials/product",{p,money}) %><% }) %></div>
+</section>
+<%- include("../partials/footer") %></body></html>
+

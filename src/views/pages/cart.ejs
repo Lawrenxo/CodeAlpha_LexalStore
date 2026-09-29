@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Cart — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec">
+<h2>My Cart</h2>
+<div class="split">
+<div class="panel"><div id="cartItems"></div>
+<div class="empty" id="cartEmpty" style="display:none">Your cart is empty.<br/><br/><a class="btn primary" href="/shop">Continue shopping</a></div>
+<div style="margin-top:14px"><label class="lbl">Promo Code (try TECH10, WELCOME15, SAVE20)</label>
+<div style="display:flex;gap:8px"><input class="input" id="promoInput" placeholder="Enter code"/><button class="btn dark" id="promoBtn">Apply</button></div></div>
+</div>
+<div class="panel"><h3>Order Summary</h3>
+<div class="summary-row"><span>Subtotal</span><span id="sumSub">$0.00</span></div>
+<div class="summary-row"><span>Discount</span><span id="sumDisc">−$0.00</span></div>
+<div class="summary-row"><span>Shipping</span><span id="sumShip">Calculated at checkout</span></div>
+<div class="summary-row total"><span>Total</span><span id="sumTotal">$0.00</span></div>
+<a class="btn primary block" href="/checkout" id="checkoutBtn" style="margin-top:12px">Proceed to Checkout →</a>
+<a class="btn block" href="/shop" style="margin-top:8px">Continue Shopping</a>
+<div class="divider"></div><h4>Recommended</h4>
+<% recommendations.forEach(p=>{ %><div class="cart-item"><img src="<%= p.imageUrl %>" onerror="this.src='/img/products/headphones.jpg'"/><div class="grow"><b style="font-size:13px"><%= p.name %></b><br/><span class="price"><%= money(p.price) %></span></div><button class="add" data-add="<%= p.id %>">+</button></div><% }) %>
+</div>
+</div>
+</section>
+<%- include("../partials/footer") %>
+<script>
+function renderCartPage(){
+  const box=document.getElementById('cartItems'); const cart=getCart();
+  document.getElementById('cartEmpty').style.display=cart.length?'none':'block';
+  document.getElementById('checkoutBtn').style.opacity=cart.length?'1':'.5';
+  box.innerHTML=cart.map(i=>`<div class="cart-item"><img src="${i.imageUrl}" onerror="this.src='/img/products/headphones.jpg'"/><div class="grow"><b>${i.name}</b><br/><span style="color:var(--muted);font-size:13px">${money(i.price)} each</span><div class="qty" style="margin-top:6px"><button onclick="changeQty('${i.id}',-1)">−</button><b>${i.qty}</b><button onclick="changeQty('${i.id}',1)">+</button><button onclick="removeFromCart('${i.id}');renderCartPage()" style="margin-left:8px;border:0;background:none;cursor:pointer">🗑️</button></div></div><b>${money(i.price*i.qty)}</b></div>`).join('');
+  const t=cartTotals();
+  document.getElementById('sumSub').textContent=money(t.subtotal);
+  document.getElementById('sumDisc').textContent='−'+money(t.discount);
+  document.getElementById('sumTotal').textContent=money(t.total);
+  const p=localStorage.getItem('promo')||''; if(p) document.getElementById('promoInput').value=p;
+}
+document.getElementById('promoBtn').onclick=()=>{const v=document.getElementById('promoInput').value.trim().toUpperCase();localStorage.setItem('promo',v);renderCartPage();toast(v?('Promo applied: '+v):'Promo cleared')};
+document.addEventListener('DOMContentLoaded',renderCartPage);
+document.addEventListener('cart:update',renderCartPage);
+</script>
+</body></html>
+
+

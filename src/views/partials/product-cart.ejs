@@ -1,0 +1,5 @@
+<div class="cart-item">
+  <img src="<%= typeof image!=='undefined'?image:(typeof p!=='undefined'?p.imageUrl:'') %>" alt=""/>
+  <div class="grow"><b><%= typeof name!=='undefined'?name:p.name %></b></div>
+  <b><%= typeof price!=='undefined'?price:'' %></b>
+</div>

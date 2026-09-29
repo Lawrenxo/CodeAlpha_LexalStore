@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Checkout — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec">
+<h2>Checkout</h2>
+<div class="split">
+<div>
+<div class="panel"><h3>Shipping Address</h3>
+<label class="lbl">Full name</label><input class="input" id="fName" value="<%= user.username %>" />
+<label class="lbl">Address</label><input class="input" id="fAddr" placeholder="Street, city, ZIP" value=""/>
+<label class="lbl">Phone</label><input class="input" id="fPhone" placeholder="+1 555 0100"/>
+</div>
+<div class="panel" style="margin-top:14px"><h3>Choose Shipping Type</h3>
+<label class="ship active"><input type="radio" name="ship" value="Economy" checked/> <span><b>Economy</b><br/><small>5–7 days • Free</small></span></label>
+<label class="ship"><input type="radio" name="ship" value="Standard"/> <span><b>Standard</b><br/><small>3–5 days • $4.99</small></span></label>
+<label class="ship"><input type="radio" name="ship" value="Express"/> <span><b>Express</b><br/><small>1–2 days • $9.99</small></span></label>
+<label class="ship"><input type="radio" name="ship" value="Cargo"/> <span><b>Cargo</b><br/><small>Same-day courier • $14.99</small></span></label>
+</div>
+</div>
+<div class="panel"><h3>Order List</h3><div id="ckItems"></div>
+<label class="lbl">Voucher / Promo</label><div style="display:flex;gap:8px"><input class="input" id="ckPromo" placeholder="TECH10"/><button class="btn" id="ckPromoBtn">Apply</button></div>
+<div class="divider"></div>
+<div class="summary-row"><span>Subtotal</span><span id="ckSub">$0.00</span></div>
+<div class="summary-row"><span>Discount</span><span id="ckDisc">−$0.00</span></div>
+<div class="summary-row"><span>Shipping (<span id="ckShipName">Economy</span>)</span><span id="ckShip">$0.00</span></div>
+<div class="summary-row total"><span>Total</span><span id="ckTotal">$0.00</span></div>
+<div class="alert" id="ckErr" style="display:none"></div>
+<button class="btn primary block" id="placeBtn" style="margin-top:12px">Place Order • Pay Securely</button>
+<small style="color:var(--muted)">🛡️ 256-bit encrypted checkout • 30-day returns</small>
+</div>
+</div>
+</section>
+<%- include("../partials/footer") %>
+<script>
+const FEES={Economy:0,Standard:4.99,Express:9.99,Cargo:14.99};
+let shipType='Economy';
+document.querySelectorAll('input[name=ship]').forEach(r=>r.addEventListener('change',()=>{shipType=r.value;document.querySelectorAll('.ship').forEach(l=>l.classList.remove('active'));r.closest('.ship').classList.add('active');renderCk()}));
+function renderCk(){
+  const cart=getCart(); const promo=(document.getElementById('ckPromo').value||localStorage.getItem('promo')||'').toUpperCase();
+  document.getElementById('ckPromo').value=promo;
+  document.getElementById('ckItems').innerHTML=cart.length?cart.map(i=>`<div class="cart-item"><img src="${i.imageUrl}"/><div class="grow"><b style="font-size:13px">${i.name}</b><br/><small>Qty ${i.qty} × ${money(i.price)}</small></div><b>${money(i.qty*i.price)}</b></div>`).join(''):'<div class="empty">Cart empty — <a class="link" href="/shop">shop now</a></div>';
+  const t=cartTotals(promo, FEES[shipType]);
+  document.getElementById('ckSub').textContent=money(t.subtotal);
+  document.getElementById('ckDisc').textContent='−'+money(t.discount);
+  document.getElementById('ckShip').textContent=money(t.shipping);
+  document.getElementById('ckTotal').textContent=money(t.total);
+  document.getElementById('ckShipName').textContent=shipType;
+}
+document.getElementById('ckPromoBtn').onclick=()=>{localStorage.setItem('promo',document.getElementById('ckPromo').value.trim().toUpperCase());renderCk()};
+document.getElementById('placeBtn').onclick=async()=>{
+  const err=document.getElementById('ckErr'); err.style.display='none';
+  const cart=getCart(); if(!cart.length){err.textContent='Your cart is empty.';err.style.display='block';return}
+  const addr=document.getElementById('fAddr').value.trim()||`${document.getElementById('fName').value}, ${document.getElementById('fPhone').value}`;
+  if(addr.length<3){err.textContent='Please enter a shipping address.';err.style.display='block';return}
+  const btn=document.getElementById('placeBtn'); btn.disabled=true; btn.textContent='Processing...';
+  try{
+    const res=await fetch('/api/orders/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart.map(i=>({productId:i.id,quantity:i.qty})),shippingAddress:addr,shippingType:shipType,promoCode:document.getElementById('ckPromo').value.trim()})});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Checkout failed');
+    clearCart(); localStorage.removeItem('promo');
+    location.href='/orders/'+data.order.id;
+  }catch(e){err.textContent=e.message;err.style.display='block';btn.disabled=false;btn.textContent='Place Order • Pay Securely'}
+};
+document.addEventListener('DOMContentLoaded',renderCk);
+</script>
+</body></html>
+

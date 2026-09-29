@@ -1,58 +1,79 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/component.css">
-    <script src="/js/menu.js" defer></script>
-    <title>Lexal Store</title>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lexal Tech Store — Discover. Shop. Upgrade.</title>
+<link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/>
+<script src="/js/menu.js" defer></script>
+<script src="/js/carousel.js" defer></script>
 </head>
+<body>
+<%- include("partials/navbar", {user, categories}) %>
+<div class="container">
+  <section class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">Discover. Shop. Upgrade.</div>
+      <h1>Latest Tech<br/><span>Gadgets</span></h1>
+      <p>Explore cutting-edge gadgets that upgrade your lifestyle. Authentic products, fast shipping, 30-day returns.</p>
+      <div class="hero-cta"><a class="btn primary" href="/shop">Shop Now →</a><a class="btn" href="/shop?category=Audio">Browse Collection</a></div>
+      <div class="hero-meta"><span>🇺🇸 US</span><span>🇬🇧 UK</span><span>🇦🇪 UAE</span><span>🚚 Fast Shipping</span></div>
+    </div>
+    <div class="hero-right">
+      <div class="badge-new">New<br/>Arrivals<br/>—</div>
+      <img class="hero-art" id="heroArt" src="/img/hero/hero.jpg" alt="Latest gadgets from Lexal Tech Store" style="border-radius:18px;object-fit:cover"/>
+      <div class="carousel-arrows"><button id="heroPrev">‹</button><button id="heroNext">›</button></div>
+    </div>
+  </section>
 
-<body class="dark">
-    <%- include("partials/navbar") %>
-    <h1>Welcome!</h1>
+  <section class="cat-cards">
+    <a class="cat-card" href="/shop?category=Audio"><span class="thumb" style="padding:0;overflow:hidden"><img src="/img/products/earbuds.jpg" alt="Audio" style="width:100%;height:100%;object-fit:cover;border-radius:14px"/></span><span><b>Audio</b><span>Premium Sound</span></span><span class="go">→</span></a>
+    <a class="cat-card" href="/shop?category=Smart%20Home"><span class="thumb" style="padding:0;overflow:hidden"><img src="/img/products/smartspeaker.jpg" alt="Smart Devices" style="width:100%;height:100%;object-fit:cover;border-radius:14px"/></span><span><b>Smart Devices</b><span>Smarter Living</span></span><span class="go">→</span></a>
+    <a class="cat-card" href="/shop?category=Wearables"><span class="thumb" style="padding:0;overflow:hidden"><img src="/img/products/watch.jpg" alt="Wearables" style="width:100%;height:100%;object-fit:cover;border-radius:14px"/></span><span><b>Wearables</b><span>Track. Achieve.</span></span><span class="go">→</span></a>
+    <a class="cat-card" href="/shop?category=Accessories"><span class="thumb" style="padding:0;overflow:hidden"><img src="/img/products/charger.jpg" alt="Accessories" style="width:100%;height:100%;object-fit:cover;border-radius:14px"/></span><span><b>Accessories</b><span>Designed for You</span></span><span class="go">→</span></a>
+    <a class="cat-card" href="/shop?category=Sale"><span class="thumb" style="padding:0;overflow:hidden"><img src="/img/products/headphones.jpg" alt="Deals" style="width:100%;height:100%;object-fit:cover;border-radius:14px"/></span><span><b>Deals</b><span>Top Deals Today</span></span><span class="go">→</span></a>
+  </section>
+</div>
 
-    <section>
+<section class="sec">
+  <div class="sec-head"><h2>Trending Products</h2><a class="link" href="/shop">View all →</a></div>
+  <div class="grid">
+    <% trending.forEach(p=>{ %><%- include("partials/product", {p, money}) %><% }) %>
+  </div>
+  <div class="trust">
+    <div>🚚<span><b>Worldwide Shipping</b>Fast delivery to US, UK & UAE</span></div>
+    <div>🛡️<span><b>Secure Payments</b>100% safe & secure checkout</span></div>
+    <div>↩️<span><b>30-Day Returns</b>Hassle-free returns guaranteed</span></div>
+    <div>🎧<span><b>Premium Support</b>24/7 customer support</span></div>
+  </div>
+</section>
 
-        <!--Carousel for products-->
-        <div class="carousel">
-            <h2>Carousel</h2>
-            <p><%= carousel %></p>
-        </div>
-    </section>
+<section class="sec">
+  <div class="sec-head"><h2>All Gadgets</h2><a class="link" href="/shop">Shop all →</a></div>
+  <div class="grid">
+    <% products.forEach(p=>{ %><%- include("partials/product", {p, money}) %><% }) %>
+  </div>
+</section>
 
-    <section>
-        <!--Recommended products-->
-        <div>
-            <div>
-                <h2>Recommended Products</h2>
-                <p>Check out our recommended products!</p>
-            </div>
-            <div>
-                <span>View</span>
-                <span>image arrow</span>
-            </div>
-        </div>
+<section class="sec">
+  <div class="sec-head"><h2>Ideas for Your Next Upgrade</h2><a class="link" href="/shop">See more ideas →</a></div>
+  <div class="ideas">
+    <% const ideaImgs={"/img/ideas/setup.jpg":0,"/img/ideas/travel.jpg":0,"/img/ideas/home.jpg":0,"/img/ideas/gaming.jpg":0,"/img/ideas/desk.jpg":0}; const ideaFiles=["/img/ideas/setup.jpg","/img/ideas/travel.jpg","/img/ideas/home.jpg","/img/ideas/gaming.jpg","/img/ideas/desk.jpg"]; %>
+    <% ideas.forEach((g,i)=>{ %>
+      <div class="idea" style="background-image:url('<%= ideaFiles[i%ideaFiles.length] %>');background-size:cover;background-position:center"><span><b><%= g.title %></b><small><%= g.count %> ideas</small></span><span class="arrow">→</span></div>
+    <% }) %>
+  </div>
+  <div class="deals">
+    <div class="deal-red"><div class="gift">🎁</div><div><h3 style="margin:0">Exclusive Deals for You!</h3><p style="margin:6px 0;opacity:.9">Save more on top-rated gadgets handpicked just for you.</p><a class="btn" href="/shop?category=Sale" style="background:#fff;border-color:#fff">Shop Deals →</a></div></div>
+    <div class="news"><h3 style="margin:0">Get the Latest Tech & Deals</h3><p style="color:var(--muted)">Join our newsletter and never miss an update.</p>
+      <form id="newsForm"><input id="newsEmail" placeholder="Enter your email" required/><button class="btn primary" type="submit">Subscribe</button></form>
+    </div>
+  </div>
+</section>
 
-        <div>
-            <!--product listing-->
-            <%= products %>
-        </div>
-    </section>
-
-    <section>
-        <!--Trending products-->
-        <h2>Trending Products</h2>
-        <p>Check out our trending products!</p>
-        <div>
-            <!--trending listing-->
-            <%= trending %>
-        </div>
-    </section>
-
-    <%- include("partials/footer") %>
+<%- include("partials/footer") %>
+<script>
+document.getElementById('newsForm')?.addEventListener('submit',e=>{e.preventDefault();toast('Subscribed! Welcome to Lexal Tech Store 🎉');e.target.reset()});
+</script>
 </body>
-
 </html>
+

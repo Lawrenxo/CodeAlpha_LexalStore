@@ -1,80 +1,17 @@
-/* STD ELEMENT */
-body {
-    padding: 0;
-    margin: 0;
-    color: var(--color-text);
-    background-color: var(--color-background);
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
+﻿/* Lexal Tech Store components — complements style.css */
+body{margin:0}
+button{font-family:inherit}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#F3F4F6;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}
+.divider{height:1px;background:var(--line);margin:14px 0}
+.skel{background:linear-gradient(90deg,#eee,#f7f7f7,#eee);border-radius:12px;min-height:120px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+table.orders{width:100%;border-collapse:collapse;font-size:14px}
+table.orders th,table.orders td{padding:12px;border-bottom:1px solid var(--line);text-align:left}
+.steps{display:flex;gap:8px;margin:14px 0}
+.step{flex:1;text-align:center;font-size:12px;color:var(--muted)}
+.step .dot{width:28px;height:28px;border-radius:50%;background:#EEE;display:grid;place-items:center;margin:0 auto 6px;font-weight:800}
+.step.done{color:var(--ink)}
+.step.done .dot{background:var(--brand);color:#fff}
 
-a {
-    text-decoration: none;
-    color: light-dark(var(--color-primary), var(--color-text));
-    margin: var(--gap-md);
-    -webkit-tap-highlight-color: transparent;
-}
-
-a.inactive {
-    color: light-dark(color-mix(in srgb, var(--color-primary) 50%, transparent),
-            var(--color-text-secondary));
-}
-
-a:hover {
-    filter: contrast(200%);
-}
-
-button {
-    min-width: 5rem;
-    padding: var(--gap-md) var(--gap-lg);
-    margin: var(--gap-md);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
-    background-color: transparent;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-button.primary {
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-}
-
-button:hover {
-    filter: grayscale(20%);
-}
-
-img.cover {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-hr {
-    height: 0;
-    border: none;
-    border-top: 1px solid var(--color-border);
-}
-
-input.text {
-    padding: var(--gap-md) var(--gap-lg);
-    margin: var(--gap-md);
-    font-size: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    outline: none;
-}
-
-input.text:focus {
-    border: 1px solid var(--color-primary);
-}
-
-
-/* CUSTOM ELEMENTS */ /*
-dropdown-menu::part(content) {
-	padding: var(--gap-sm);
-	background-color: var(--color-surface);
-	border-radius: var(--radius-md);
-	box-shadow: 0 0 5px var(--color-shadow);
-}*/

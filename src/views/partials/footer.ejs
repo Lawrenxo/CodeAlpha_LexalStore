@@ -1,16 +1,26 @@
-<div class="footer">
-    <div>
-        <span><img src="/images/logo.png" alt="Lexal Store Logo" srcset=""></span>
-        <p>lexal store</p>
-        <p>&copy; 2023 Lexal Store. All rights reserved.</p>
+﻿<footer>
+  <div class="foot">
+    <div><div class="logo"><span class="logo-mark">L</span><span>Lexal Tech Store</span></div><p>Discover. Shop. Upgrade.<br/>© 2026 Lexal Tech Store. All rights reserved.</p></div>
+    <div><b>Shop</b><br/>Gadgets<br/>Smart Home<br/>Audio<br/>Wearables</div>
+    <div><b>Support</b><br/>Contact us<br/>Shipping & Returns<br/>Warranty<br/>FAQ</div>
+    <div><b>Why us</b><br/>✅ 100% Authentic<br/>🛡️ Secure Payments<br/>↩️ 30-Day Returns<br/>🎧 24/7 Support</div>
+    <div><b>Follow us</b><br/>Facebook • Instagram<br/>X • YouTube • TikTok<br/><br/><a class="link" href="/about">About Lexal Tech Store →</a></div>
+  </div>
+</footer>
+<div class="modal" id="rateModal"><div class="modal-card">
+  <h3>How is your order?</h3><p style="color:var(--muted)">Tap a star to rate</p>
+  <div class="big-stars" id="rateStars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+  <textarea class="input" id="rateText" placeholder="Add detailed review..." style="margin:12px 0"></textarea>
+  <div style="display:flex;gap:10px"><button class="btn" id="rateCancel" style="flex:1;justify-content:center">Cancel</button><button class="btn primary" id="rateSubmit" style="flex:1;justify-content:center">Submit</button></div>
+</div></div>
+<script>
+(function(){
+  const m=document.getElementById('rateModal'); if(!m) return;
+  window.openRateModal=function(){m.classList.add('open')};
+  document.getElementById('rateCancel')?.addEventListener('click',()=>m.classList.remove('open'));
+  document.getElementById('rateSubmit')?.addEventListener('click',()=>{m.classList.remove('open'); if(window.toast) toast('Thanks for your review! ★★★★★')});
+  document.querySelectorAll('#rateStars span').forEach((s,i,arr)=>s.addEventListener('click',()=>{arr.forEach((x,j)=>x.style.color=j<=i?'#F59E0B':'#DDD')}));
+})();
+</script>
 
-    </div>
-    <div>
-        <h3>Products</h3>
-        <p>For your needs</p>
-    </div>
-    <div>
-        <h3>Customer Service</h3>
-        <p>Contact us for any inquiries</p>
-    </div>
-</div>
+

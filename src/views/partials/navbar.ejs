@@ -1,20 +1,34 @@
-<nav class="flex flx-center flx-between border-all pad pad-md">
-    <span>Lexal</span>
+﻿<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="logo"><span class="logo-mark">L</span><span>Lexal Tech Store<small>Discover. Shop. Upgrade.</small></span></a>
+    <form class="searchbar" action="/shop" method="GET" id="searchForm">
+      <input name="q" id="searchInput" placeholder="Search for tech gadgets, ideas and more" value="<%= typeof q !== 'undefined' ? q : '' %>" />
+      <button type="submit" aria-label="Search">⌕</button>
+    </form>
+    <nav class="nav-links">
+      <a href="/" class="<%= (typeof page==='home'||typeof page==='undefined')?'active':'' %>">Home</a>
+      <a href="/shop">Shop</a>
+      <a href="/wishlist">Wishlist</a>
+      <a href="/orders">Orders</a>
+    </nav>
+    <a class="icon-btn" href="/wishlist" title="Wishlist">♡<span class="count" id="wishCount" style="display:none">0</span></a>
+    <a class="icon-btn" href="/cart" title="Cart">🛒<span class="count" id="cartCount">0</span></a>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <a class="icon-btn" href="/orders" title="<%= user.username %>">👤</a>
+      <button class="btn" id="logoutBtn" style="padding:8px 14px;font-size:13px">Logout</button>
+    <% } else { %>
+      <a class="btn dark" href="/login" style="padding:8px 16px;font-size:13px">Login</a>
+    <% } %>
+  </div>
+  <div class="catnav"><div class="catnav-inner" id="catNav">
+    <% const _cats = typeof categories !== 'undefined' ? categories : ["Gadgets","Smart Home","Audio","Wearables","Accessories","Sale"]; %>
+    <a class="pill" href="/shop">All</a>
+    <% _cats.forEach(c=>{ %>
+      <a class="pill" href="/shop?category=<%= encodeURIComponent(c) %>"><%= c %></a>
+    <% }) %>
+    <span class="region">🌐 US | UK | UAE &nbsp; • &nbsp; 🚚 Fast Shipping</span>
+  </div></div>
+</header>
+<script src="/js/store.js" defer></script>
 
-    <span class="hide-ss">
-        <a>Home</a>
-        <a>Product</a>
-        <a>About</a>
-    </span>
 
-    <span>
-        <span>S</span>
-        <span class="hide-ss">U</span>
-        <span class="hide-ss">R</span>
-        <dropdown-menu class="hide-ls">
-            <a>Home</a><br>
-            <a>Product</a><br>
-            <a>About</a><br>
-        </dropdown-menu>
-    </span>
-</nav>

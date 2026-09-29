@@ -1,0 +1,17 @@
+<div class="card">
+  <a href="/products/<%= p.id %>" class="imgwrap">
+    <% if (p.badge) { %><span class="badge"><%= p.badge %></span><% } %>
+    <img src="<%= p.imageUrl %>" alt="<%= p.name %>" loading="lazy" onerror="this.src='/img/products/headphones.jpg'"/>
+  </a>
+  <div class="body">
+    <a href="/products/<%= p.id %>" class="name"><%= p.name %></a>
+    <div class="row">
+      <span class="price"><%= money(p.price) %></span>
+      <span class="likes">★ <%= Number(p.rating).toFixed(1) %> • <%= p.reviewsCount %></span>
+    </div>
+    <div class="row">
+      <small style="color:var(--muted)">♡ <%= (1000+ (p.reviewsCount%900)) %></small>
+      <button class="add" data-add="<%= p.id %>" aria-label="Add to cart">+</button>
+    </div>
+  </div>
+</div>

@@ -10,13 +10,13 @@ export const UserSchema = z.object({
 
 export const UserSigninCredSchema = z.object({
     email: z.email(),
-    passwordHash: z.string()
+    password: z.string().min(6)
 });
 
 export const UserSignupCredSchema = z.object({
-    username: z.string(),
+    username: z.string().min(3).max(50),
     email: z.email(),
-    passwordHash: z.string()
+    password: z.string().min(6).max(100)
 });
 
 /**

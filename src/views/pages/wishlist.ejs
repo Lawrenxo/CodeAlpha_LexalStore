@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Wishlist — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec"><div class="sec-head"><h2>My Wishlist</h2><span style="color:var(--muted)" id="wCount"></span></div>
+<div class="grid" id="wishGrid"></div>
+<div class="empty" id="wishEmpty">Nothing saved yet. Tap ♡ on any product.<br/><br/><a class="btn primary" href="/shop">Discover gadgets</a></div>
+<div class="sec-head" style="margin-top:22px"><h2>You may like</h2></div>
+<div class="grid"><% products.forEach(p=>{ %><%- include("../partials/product",{p,money}) %><% }) %></div>
+</section>
+<%- include("../partials/footer") %>
+<script>
+function renderWish(){
+  const ids=getWish(); document.getElementById('wCount').textContent=ids.length?ids.length+' items':'';
+  document.getElementById('wishEmpty').style.display=ids.length?'none':'block';
+  const grid=document.getElementById('wishGrid'); grid.innerHTML='';
+  if(!ids.length) return;
+  // fetch details from API
+  Promise.all(ids.map(id=>fetch('/api/products/'+id).then(r=>r.ok?r.json():null))).then(list=>{
+    grid.innerHTML='';
+    list.filter(Boolean).forEach(({product:p})=>{
+      const d=document.createElement('div'); d.className='card';
+      d.innerHTML=`<a href="/products/${p.id}" class="imgwrap"><img src="${p.imageUrl}"/></a><div class="body"><a class="name" href="/products/${p.id}">${p.name}</a><div class="row"><span class="price">$${Number(p.price).toFixed(2)}</span><button class="add" onclick="addToCart('${p.id}')">+</button></div><div class="row"><button class="btn" style="padding:6px 12px;font-size:12px" onclick="toggleWish('${p.id}');renderWish()">Remove ♥</button></div></div>`;
+      grid.appendChild(d);
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded',renderWish);
+</script>
+</body></html>
+

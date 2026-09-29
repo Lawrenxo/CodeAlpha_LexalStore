@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title><%= product.name %> — Lexal Tech Store</title><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/component.css"/></head>
+<body><%- include("../partials/navbar",{user}) %>
+<section class="sec">
+<a href="/shop" class="link">← Back to shop</a>
+<div class="pd" style="margin-top:12px">
+  <div class="pd-gallery">
+    <div class="main"><img id="pdMain" src="<%= product.imageUrl %>" alt="<%= product.name %>" onerror="this.src='/img/products/headphones.jpg'" style="width:100%;height:380px;object-fit:cover"/></div>
+    <div class="pd-thumbs">
+      <img src="<%= product.imageUrl %>" class="active" onclick="document.getElementById('pdMain').src=this.src" onerror="this.src='/img/products/headphones.jpg'"/>
+      <img src="/img/products/watch.jpg" onclick="document.getElementById('pdMain').src=this.src"/>
+      <img src="/img/products/earbuds.jpg" onclick="document.getElementById('pdMain').src=this.src"/>
+      <img src="/img/products/speaker.jpg" onclick="document.getElementById('pdMain').src=this.src"/>
+    </div>
+    <div class="divider"></div>
+    <h3>Reviews <span class="stars">★★★★★</span> <%= Number(product.rating).toFixed(1) %> <small style="color:var(--muted)">(<%= product.reviewsCount %> reviews)</small></h3>
+    <div class="bar"><span>5★</span><div class="track"><div class="fill" style="width:72%"></div></div><span>72%</span></div>
+    <div class="bar"><span>4★</span><div class="track"><div class="fill" style="width:18%"></div></div><span>18%</span></div>
+    <div class="bar"><span>3★</span><div class="track"><div class="fill" style="width:6%"></div></div><span>6%</span></div>
+    <div class="bar"><span>2★</span><div class="track"><div class="fill" style="width:2%"></div></div><span>2%</span></div>
+    <div class="bar"><span>1★</span><div class="track"><div class="fill" style="width:2%"></div></div><span>2%</span></div>
+    <div style="margin-top:12px;display:grid;gap:10px">
+      <div class="panel" style="padding:12px"><b>Robert Fox</b> <span class="stars">★★★★★</span><br/><small>Great sound, battery lasts forever. Fast shipping to UK!</small></div>
+      <div class="panel" style="padding:12px"><b>Kristin Watson</b> <span class="stars">★★★★☆</span><br/><small>Good value for money. Packaging could be better.</small></div>
+    </div>
+    <button class="btn" style="margin-top:12px" onclick="openRateModal()">Write a Review</button>
+  </div>
+  <div class="pd-info">
+    <% if(product.badge){ %><span class="chip">🔥 <%= product.badge %></span><% } %>
+    <span class="chip"><%= product.category %></span>
+    <h1 style="margin:10px 0"><%= product.name %></h1>
+    <div><span class="stars"><% for(let i=0;i<5;i++){ %><%= i < Math.round(product.rating) ? '★':'☆' %><% } %></span> <small style="color:var(--muted)"><%= product.reviewsCount %> ratings</small></div>
+    <p style="color:var(--muted)">Sold by <b style="color:var(--ink)">Lexal Tech Store Official</b> • <%= product.stock %> in stock</p>
+    <h2 style="font-size:32px;margin:8px 0"><%= money(product.price) %></h2>
+    <p><%= product.description %></p>
+    <label class="lbl">Select Color</label>
+    <div style="display:flex;gap:10px" id="colors">
+      <span class="swatch active" data-c="Black" style="background:#111"></span>
+      <span class="swatch" data-c="White" style="background:#fff"></span>
+      <span class="swatch" data-c="Red" style="background:#E11D2E"></span>
+      <span class="swatch" data-c="Blue" style="background:#2563EB"></span>
+    </div>
+    <label class="lbl">Quantity</label>
+    <div class="qty"><button id="qMinus">−</button><b id="qVal">1</b><button id="qPlus">+</button>
+    <span style="margin-left:12px;color:var(--muted);font-size:13px" id="colorLabel">Black</span></div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn primary" id="addBtn" style="flex:1;justify-content:center">Add to Cart</button>
+      <button class="icon-btn" id="wishBtn" title="Wishlist">♡</button>
+    </div>
+    <button class="btn dark block" id="buyBtn" style="margin-top:10px">Buy Now</button>
+    <div class="divider"></div>
+    <small style="color:var(--muted)">🚚 Free Economy shipping • 🛡️ 1-year warranty • ↩️ 30-day returns • 💳 Secure checkout</small>
+  </div>
+</div>
+<div class="sec-head" style="margin-top:26px"><h2>You may also like</h2><a class="link" href="/shop">View all</a></div>
+<div class="grid"><% related.forEach(p=>{ %><%- include("../partials/product",{p,money}) %><% }) %></div>
+</section>
+<%- include("../partials/footer") %>
+<script>
+(function(){
+  let qty=1;
+  const qVal=document.getElementById('qVal');
+  document.getElementById('qPlus').onclick=()=>{qty=Math.min(99,qty+1);qVal.textContent=qty};
+  document.getElementById('qMinus').onclick=()=>{qty=Math.max(1,qty-1);qVal.textContent=qty};
+  document.querySelectorAll('#colors .swatch').forEach(s=>s.onclick=()=>{document.querySelectorAll('#colors .swatch').forEach(x=>x.classList.remove('active'));s.classList.add('active');document.getElementById('colorLabel').textContent=s.dataset.c});
+  const pid="<%= product.id %>";
+  document.getElementById('addBtn').onclick=()=>{addToCart(pid,qty);toast('Added to cart 🛒')};
+  document.getElementById('buyBtn').onclick=()=>{addToCart(pid,qty);location.href='/cart'};
+  document.getElementById('wishBtn').onclick=function(){toggleWish(pid);this.textContent=this.textContent==='♡'?'♥':'♡'};
+})();
+</script>
+</body></html>
+
